@@ -1,7 +1,17 @@
 doctype html
 html
   head
-    title Restaurant App
+    title Restaurant List
+    link(rel='stylesheet', href='/public/assets/css/styles.css')
   body
     include partials/header.pug
+
     block content
+      h1 Restaurant List
+      ul
+        each restaurant in restaurants
+          li
+            p Name: #{restaurant.name}
+            p Cuisine: #{restaurant.cuisine}
+
+    include partials/footer.pug
