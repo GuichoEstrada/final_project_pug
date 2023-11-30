@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Restaurant Data</title>
+<style>
+    table {
+      width: 100%; 
+      border-collapse: collapse;
+      background-color: #7e6d6d; 
+    }
+    th, td {
+      border: 3px solid #ddd;
+      padding: 10px;
+      text-align: left;
+      color: #ddd; 
+      font-size: 12pt;
+    }
+    tr:nth-child(even) {
+      background-color: #666; 
+    }
+    th {
+      background-color: #999; 
+      color: white;
+    }
+</style>
+</head>
+<body>
+  <h1>Restaurant Data</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Restaurant ID</th>
+        <th>Building</th>
+        <th>Coord</th>
+        <th>Street</th>
+        <th>Zipcode</th>
+        <th>Borough</th>
+        <th>Cuisine</th>
+        <th>Grades</th>
+        <th>Name</th>
+        <th>Restaurant_id</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each restaurants}}
+      <tr>
+        <td>{{_id}}</td>
+        <td>{{address.building}}</td>
+        <td>{{address.coord}}</td>
+        <td>{{address.street}}</td>
+        <td>{{address.zipcode}}</td>
+        <td>{{borough}}</td>
+        <td>{{cuisine}}</td>
+        <td>{{grades}}</td>
+        <td>{{name}}</td>
+        <td>{{restaurant_id}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</body>
+</html>
