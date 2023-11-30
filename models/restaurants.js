@@ -1,0 +1,39 @@
+/********************************************************************************** 
+ * ITE5315 – Assignment 4
+ * I declare that this assignment is my own work in accordance with Humber Academic Policy.
+ * No part of this assignment has been copied manually or electronically from any other source
+ * (including web sites) or distributed to other students.*
+ * Name: Luis Carlo Estrada Student ID: N01541627 Date: 11/23/2023
+ **********************************************************************************/
+// load mongoose since we need it to define a model
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const GradeSchema = new Schema({
+    date: Date,
+    grade: String,
+    score: Number
+});
+
+const AddressSchema = new Schema({
+    building: String,
+    coord: {
+        type: [Number]
+    },
+    street: String,
+    zipcode: String,
+    borough: String,
+    cuisine: String
+});
+
+const RestaurantSchema = new Schema({
+    _id: String,
+    address: AddressSchema,
+    grades: [GradeSchema],
+    name: String,
+    restaurant_id: String
+});
+
+const RestaurantModel = mongoose.model('Restaurant', RestaurantSchema);
+
+module.exports = RestaurantModel;
