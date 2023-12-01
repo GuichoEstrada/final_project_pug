@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{pageTitle}}</title>
+    <!-- Add your CSS links or styles here -->
+</head>
+<body>
+    {{> header}}
+
+    <h1>Restaurant List</h1>
+    <ul>
+    {{#each restaurants}}
+      <li>
+             <p>Name: {{this['name']}}</p>
+            <p>Cuisine: {{#if this.cuisine}}{{this.cuisine}}{{else}}N/A{{/if}}</p>
+        </li>
+    {{/each}}
+    </ul>
+
+    {{> footer}}
+
+</body>
+</html>

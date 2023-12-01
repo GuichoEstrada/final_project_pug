@@ -19,9 +19,14 @@ const exphbs = require('express-handlebars');
 //loads the path module
 const path = require('path');
 
-// Set the view engine to Pug
-app.set('view engine', 'pug');
-app.set('views', __dirname + '/views');
+app.engine('.hbs', exphbs.engine({ 
+    extname: '.hbs', 
+    defaultLayout: 'main',
+    layoutsDir: path.join(__dirname, 'views', 'layouts'),
+    partialsDir: path.join(__dirname, 'views', 'partials'),
+}));
+app.set('view engine', '.hbs');
+
 
 // Initialize the module before starting the server
 restaurantModule.initialize(config.url)
@@ -56,9 +61,8 @@ const defineRoutes = () => {
             const page = req.query.page || 1;
             const perPage = req.query.perPage || 10;
             const borough = req.query.borough || null;
-    
             const restaurants = await restaurantModule.getAllRestaurants(page, perPage, borough);
-            res.render('main', { restaurants });
+            res.render('layouts/main', { restaurants });
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');
