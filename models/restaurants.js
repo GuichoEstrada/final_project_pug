@@ -27,7 +27,7 @@ const AddressSchema = new Schema({
 });
 
 const RestaurantSchema = new Schema({
-    _id: String,
+    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     address: AddressSchema,
     grades: [GradeSchema],
     name: String,

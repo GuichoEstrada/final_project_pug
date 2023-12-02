@@ -13,10 +13,13 @@ const initialize = async (connectionString) => {
 
 const addNewRestaurant = async (data) => {
     try {
+        // Create a new instance of the RestaurantModel with the provided data
         const newRestaurant = new RestaurantModel(data);
-        await newRestaurant.save();
-        console.log('New restaurant added:', newRestaurant);
-        return newRestaurant;
+
+        // Save the new restaurant to the database
+        const savedRestaurant = await newRestaurant.save();
+
+        return savedRestaurant;
     } catch (error) {
         console.error('Error adding new restaurant:', error.message);
         throw error;
@@ -48,8 +51,44 @@ const getAllRestaurants = async (page, perPage, borough) => {
     }
 };
 
+const getRestaurantById = async (id) => {
+    try {
+        const restaurant = await RestaurantModel.findOne({ _id: id });
+
+        if (!restaurant) {
+            throw new Error('Restaurant not found');
+        }
+
+        return restaurant;
+    } catch (error) {
+        console.error(`Error retrieving restaurant by ID (${id}):`, error.message);
+        return null; // Return null when the restaurant is not found
+    }
+};
+
+const deleteRestaurantById = async (id) => {
+    try {
+        // Use Mongoose's deleteOne method to remove the restaurant by _id
+        const result = await RestaurantModel.deleteOne({ _id: id });
+
+        if (result.deletedCount === 1) {
+            // Restaurant successfully deleted
+            return { success: true, message: 'Restaurant deleted successfully' };
+        } else {
+            // Restaurant not found
+            return { success: false, message: 'Restaurant not found' };
+        }
+    } catch (error) {
+        console.error('Error deleting restaurant:', error.message);
+        throw error;
+    }
+};
+
 module.exports = {
     initialize,
     addNewRestaurant,
     getAllRestaurants,
+    getRestaurantById,
+    addNewRestaurant,
+    deleteRestaurantById
 };

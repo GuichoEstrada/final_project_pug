@@ -1,0 +1,17 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Restaurant List
+  body
+    block content
+      include ../partials/header
+      h1 Restaurant List
+      ul
+        each restaurant in restaurants
+          li
+            p Name: #{restaurant.name}
+            p Restaurant ID: #{restaurant.restaurant_id}
+            // Add more fields as needed
+      include ../partials/footer

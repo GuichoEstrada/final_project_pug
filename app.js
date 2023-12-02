@@ -8,25 +8,13 @@
 const express = require('express');
 const restaurantModule = require('./modules/module');
 const config = require('./config/database');
+const path = require('path');
 
 const app = express();
 const port = 3000;
 
-//load the handlebars module
-const exphbs = require('express-handlebars');
-//app.set('view engine', 'hbs');
-
-//loads the path module
-const path = require('path');
-
-app.engine('.hbs', exphbs.engine({ 
-    extname: '.hbs', 
-    defaultLayout: 'main',
-    layoutsDir: path.join(__dirname, 'views', 'layouts'),
-    partialsDir: path.join(__dirname, 'views', 'partials'),
-}));
-app.set('view engine', '.hbs');
-
+app.set('views', path.join(__dirname, 'views', 'layouts'));
+app.set('view engine', 'pug');
 
 // Initialize the module before starting the server
 restaurantModule.initialize(config.url)
@@ -44,6 +32,15 @@ restaurantModule.initialize(config.url)
 
 // Function to define routes
 const defineRoutes = () => {
+    // Landing page
+    app.get('/', async (req, res) => {
+        try {
+            res.send('WELCOME')
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
     // Route to add a new restaurant
     app.post('/restaurants', async (req, res) => {
         try {
@@ -62,67 +59,47 @@ const defineRoutes = () => {
             const perPage = req.query.perPage || 10;
             const borough = req.query.borough || null;
             const restaurants = await restaurantModule.getAllRestaurants(page, perPage, borough);
-            res.render('layouts/main', { restaurants });
+            res.render('main', { restaurants });
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');
         }
     });
 
-    // Add other routes as needed
+    app.get('/restaurants/:id', async (req, res) => {
+        const restaurantId = req.params.id;
+    
+        try {
+            const restaurant = await restaurantModule.getRestaurantById(restaurantId);
+    
+            if (restaurant) {
+                // Restaurant found
+                res.render('main', { restaurants: [restaurant] });  // Render the main layout
+            } else {
+                // Restaurant not found
+                res.status(404).send('Restaurant not found');
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+
+    app.delete('/restaurants/:id', async (req, res) => {
+        const restaurantIdToDelete = req.params.id;
+    
+        try {
+            const deleteResult = await restaurantModule.deleteRestaurantById(restaurantIdToDelete);
+    
+            if (deleteResult.success) {
+                res.status(200).json({ message: 'Restaurant deleted successfully' });
+            } else {
+                res.status(404).json({ message: 'Restaurant not found or could not be deleted' });
+            }
+        } catch (error) {
+            console.error('Error deleting restaurant:', error.message);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+    });
+    
 };
-/***********************************************************************************************************************************
-//Ongoing code for Step 5
-app.engine('.hbs', exphbs.engine({ 
-    extname: '.hbs', 
-    defaultLayout: 'main',
-    layoutsDir: path.join(__dirname, 'views'),
-    runtimeOptions: {
-        allowProtoPropertiesByDefault: true, // Disable the warning for accessing non-own properties
-        allowProtoMethodsByDefault: true // Disable the warning for accessing non-own methods
-    }
-  }));
-  app.set('view engine', '.hbs');
-
-  //get all info of restaurant records
-  const RestaurantModel = require('./models/restaurants'); // replace with the path to your model
-
-app.get('/search', function(req, res) {
-    // use mongoose to get all restaurants in the database
-    RestaurantModel.find({})
-        .then(restaurants => {
-            // render the 'table' view with the retrieved restaurants
-            res.render('search', { restaurants: restaurants });
-        })
-        .catch(err => {
-            // send the error if there is an error retrieving
-            res.status(500).send(err);
-        });
-});
-
-app.post('/searched', (req, res) => {
-	const keyword = req.body.keyword;
-  
-	// use Mongoose to get all restaurants in the database
-	RestaurantModel.find({})
-		.then(restaurants => {
-			const filteredData = restaurants.filter(
-				item =>
-					item.restaurant_id.toLowerCase().includes(keyword.toLowerCase()) ||
-					item.address.street.toLowerCase().includes(keyword.toLowerCase())
-			);
-  
-			if (filteredData.length > 0) {
-				res.render('table', { restaurants: filteredData });
-			} else {
-				res.send('No results found');
-			}
-		})
-		.catch(err => {
-			console.error(err);
-			res.status(500).send('Error loading data from database');
-		});
-});
-********************************************************************************************************************************** */
-
-  
