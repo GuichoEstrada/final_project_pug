@@ -1,9 +1,9 @@
 /********************************************************************************** 
- * ITE5315 – Assignment 4
+ * ITE5315 – Final Project
  * I declare that this assignment is my own work in accordance with Humber Academic Policy.
  * No part of this assignment has been copied manually or electronically from any other source
  * (including web sites) or distributed to other students.*
- * Name: Luis Carlo Estrada Student ID: N01541627 Date: 11/23/2023
+ * Name: Luis Carlo Estrada | Steven Marty Ces Student ID: N01541627 Date: 11/23/2023
  **********************************************************************************/
 // load mongoose since we need it to define a model
 const mongoose = require('mongoose');

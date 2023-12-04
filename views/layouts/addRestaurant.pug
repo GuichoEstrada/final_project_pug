@@ -1,0 +1,87 @@
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Add New Restaurant
+    link(rel="stylesheet", href="../../public/assets/css/addNewRestaurant.css")
+  body.body
+    block content
+      include ../partials/header
+      main.content
+        h1.title Add New Restaurant
+        fieldset.form
+            form#addRestaurantForm(action="/api/addNewRestaurant", method="post")
+                label.form-label(for="id") ID:
+                input.form-input(type="text", name="id", required)
+                label.form-label(for="name") Name:
+                input.form-input(type="text", name="name", required)
+                label.form-label(for="building") Building:
+                input.form-input(type="text", name="building")
+                label.form-label(for="street") Street:
+                input.form-input(type="text", name="street", required)
+                label.form-label(for="zipcode") Zip Code:
+                input.form-input(type="text", name="zipcode")
+                label.form-label(for="borough") Borough:
+                input.form-input(type="text", name="borough")
+                label.form-label(for="cuisine") Cuisine:
+                input.form-input(type="text", name="cuisine", required)
+                button.form-button(type="submit") Add Restaurant
+      include ../partials/footer
+      script.
+        document.addEventListener('DOMContentLoaded', function() {
+            const addRestaurantForm = document.getElementById('addRestaurantForm');
+
+            if (addRestaurantForm) {
+            console.log('Form element found!');
+            addRestaurantForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                // Get references to form fields
+                const nameInput = document.querySelector('input[name="name"]');
+                const boroughInput = document.querySelector('input[name="borough"]');
+                const restaurantIdInput = document.querySelector('input[name="id"]');
+                const streetInput = document.querySelector('input[name="street"]');
+                const cuisineInput = document.querySelector('input[name="cuisine"]');
+                const zipcodeInput = document.querySelector('input[name="zipcode"]');
+
+                // Perform any form validation or other logic if needed
+                if (!nameInput.value || !boroughInput.value) {
+                alert('Please fill in all required fields.');
+                return; // Stop form submission if validation fails
+                }
+
+                try {
+                // Submit the form data to the server
+                const response = await fetch('/api/addNewRestaurant', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        restaurant_id: restaurantIdInput.value,
+                        name: nameInput.value,
+                        building: document.querySelector('input[name="building"]').value,
+                        street: streetInput.value,
+                        zipcode: document.querySelector('input[name="zipcode"]').value,
+                        borough: boroughInput.value,
+                        cuisine: cuisineInput.value,
+                    }),
+                });
+
+                if (response.ok) {
+                    // Restaurant added successfully, redirect with a confirmation message
+                    window.location.href = `/api/restaurants?notification=added`;
+                } else {
+                    // Handle the case where the server returns an error
+                    console.error('Error adding restaurant:', response.statusText);
+                    alert('Error adding restaurant. Please try again.');
+                }
+                } catch (error) {
+                console.error('Error adding restaurant:', error.message);
+                alert('Error adding restaurant. Please try again.');
+                }
+            });
+            } else {
+            console.error('Form element not found!');
+            }
+        });

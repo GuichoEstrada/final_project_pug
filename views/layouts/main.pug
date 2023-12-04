@@ -1,17 +1,117 @@
-doctype html
+link(rel="stylesheet", href="../../public/assets/css/header.css")
+link(rel="stylesheet", href="../../public/assets/css/styles.css")
 html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title Restaurant List
-  body
+  body.body
     block content
       include ../partials/header
-      h1 Restaurant List
-      ul
-        each restaurant in restaurants
-          li
-            p Name: #{restaurant.name}
-            p Restaurant ID: #{restaurant.restaurant_id}
-            // Add more fields as needed
+      main.content
+        if showNotification
+          p.restaurant-added-notification.fadeOut New Restaurant added successfully!
+        h1.title All Restaurants
+        ul.restaurant-card-container
+          each restaurant in restaurants
+            li.restaurant-card(id=`restaurant-${restaurant.restaurant_id}`)
+              div.restaurant-details
+                p Restaurant ID: #{restaurant.restaurant_id}
+                p Name: #{restaurant.name}
+                if restaurant.address
+                  p Address: 
+                    | #{restaurant.address.street} #{restaurant.address.building},
+                    | #{restaurant.address.zipcode}
+                else
+                  p Address: N/A
+                p Borough: #{restaurant.borough}
+                p Cuisine: #{restaurant.cuisine}
+              div.restaurant-actions
+                button.update-button(type="button", onclick=`openUpdateModal(${JSON.stringify(restaurant)})`) Update
+                button.delete-button(type="button", data-restaurant-id=restaurant.restaurant_id) Delete
       include ../partials/footer
+      script.
+        async function deleteRestaurant(restaurantId) {
+            console.log(restaurantId);
+            try {
+                // Send a DELETE request to the server to delete the restaurant
+                const response = await fetch(`/api/restaurants/${encodeURIComponent(restaurantId)}`, {
+                    method: 'DELETE',
+                });
+                console.log(`/api/restaurants/${encodeURIComponent(restaurantId)}`);
+
+                if (response.ok) {
+                    // If successfully deleted, remove the restaurant from the UI
+                    const deletedRestaurant = document.getElementById(`restaurant-${restaurantId}`);
+                    deletedRestaurant.remove();
+                } else {
+                    // Handle the case where the server returns an error
+                    console.error('Error deleting restaurant:', response.status, response.statusText);
+                    alert('Error deleting restaurant. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error deleting restaurant:', error.message);
+                alert('Error deleting restaurant. Please try again.');
+            }
+        }
+
+        // Attach click event handlers to the delete buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-button');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const restaurantId = button.dataset.restaurantId;
+                    deleteRestaurant(restaurantId);
+                });
+            });
+        });
+
+        //- function openUpdateModal(restaurantId, building, street, zipcode, borough, name, cuisine) {
+        //-     // Populate the modal fields with existing data
+        //-     document.getElementById('updateRestaurantId').value = restaurantId;
+        //-     document.getElementById('updateBuilding').value = building;
+        //-     document.getElementById('updateStreet').value = street;
+        //-     document.getElementById('updateZipcode').value = zipcode;
+        //-     document.getElementById('updateBorough').value = borough;
+        //-     document.getElementById('updateName').value = name;
+        //-     document.getElementById('updateCuisine').value = cuisine;
+
+        //-     // Show the modal
+        //-     $('#updateModal').modal('show');
+        //- }
+        
+        //- // Add this script to handle the update request
+        //- async function updateRestaurant() {
+        //-     const restaurantId = document.getElementById('updateRestaurantId').value;
+        //-     const updatedData = {
+        //-         building: document.getElementById('updateBuilding').value,
+        //-         street: document.getElementById('updateStreet').value,
+        //-         zipcode: document.getElementById('updateZipcode').value,
+        //-         borough: document.getElementById('updateBorough').value,
+        //-         name: document.getElementById('updateName').value,
+        //-         cuisine: document.getElementById('updateCuisine').value,
+        //-     };
+
+        //-     try {
+        //-         const response = await fetch(`/api/updateRestaurant/${encodeURIComponent(restaurantId)}`, {
+        //-             method: 'PUT',
+        //-             headers: {
+        //-                 'Content-Type': 'application/json',
+        //-             },
+        //-             body: JSON.stringify(updatedData),
+        //-         });
+
+        //-         if (response.ok) {
+        //-             // If successfully updated, hide the modal or perform other actions
+        //-             $('#updateModal').modal('hide');
+        //-         } else {
+        //-             // Handle errors
+        //-             console.error('Error updating restaurant:', response.status, response.statusText);
+        //-             alert('Error updating restaurant. Please try again.');
+        //-         }
+        //-     } catch (error) {
+        //-         console.error('Error updating restaurant:', error.message);
+        //-         alert('Error updating restaurant. Please try again.');
+        //-     }
+        //- }

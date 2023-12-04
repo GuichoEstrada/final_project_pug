@@ -3,18 +3,27 @@
  * I declare that this assignment is my own work in accordance with Humber Academic Policy.
  * No part of this assignment has been copied manually or electronically from any other source
  * (including web sites) or distributed to other students.*
- * Name: Luis Carlo Estrada Student ID: N01541627 Date: 11/23/2023
+ * Name: Luis Carlo Estrada | Steven Marty Ces Student ID: N01541627 Date: 11/23/2023
  **********************************************************************************/
 const express = require('express');
 const restaurantModule = require('./modules/module');
 const config = require('./config/database');
+const bodyParser = require('body-parser');
 const path = require('path');
+const Restaurant = require('./models/restaurants');
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
 
 const app = express();
 const port = 3000;
 
+// Use middleware to parse URL-encoded data
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.set('views', path.join(__dirname, 'views', 'layouts'));
 app.set('view engine', 'pug');
+
+app.use('/public', express.static('public'));
 
 // Initialize the module before starting the server
 restaurantModule.initialize(config.url)
@@ -42,10 +51,40 @@ const defineRoutes = () => {
         }
     });
     // Route to add a new restaurant
-    app.post('/restaurants', async (req, res) => {
+    app.post('/api/addNewRestaurant', async (req, res) => {
         try {
-            const newRestaurant = await restaurantModule.addNewRestaurant(req.body);
-            res.status(201).json(newRestaurant);
+            // Get the restaurant data from the request body
+            const { building, street, zipcode, borough, name, restaurant_id, cuisine } = req.body;
+    
+            // Validate the required fields
+            if (!building || !street || !zipcode || !borough || !name || !restaurant_id || !cuisine) {
+                return res.status(400).json({ error: 'Incomplete restaurant data' });
+            }
+    
+            // Create a new restaurant object
+            const newRestaurant = new Restaurant({
+                building,
+                street,
+                zipcode,
+                borough,
+                name,
+                restaurant_id,
+                cuisine,
+            });
+    
+            // Save the new restaurant to the MongoDB database
+            const savedRestaurant = await newRestaurant.save();
+            console.log(savedRestaurant)
+            // Respond with the saved restaurant data
+            res.status(201).json(savedRestaurant);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+    app.get('/api/addNewRestaurant', async (req, res) => {
+        try {
+            res.render('addRestaurant')
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');
@@ -53,20 +92,24 @@ const defineRoutes = () => {
     });
 
     // Route to get all restaurants
-    app.get('/restaurants', async (req, res) => {
+    app.get('/api/restaurants', async (req, res) => {
         try {
             const page = req.query.page || 1;
             const perPage = req.query.perPage || 10;
             const borough = req.query.borough || null;
+            const showNotification = req.query.notification === 'added';
             const restaurants = await restaurantModule.getAllRestaurants(page, perPage, borough);
-            res.render('main', { restaurants });
+            res.render('main', { 
+                restaurants,
+                showNotification 
+            })
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');
         }
     });
 
-    app.get('/restaurants/:id', async (req, res) => {
+    app.get('/api/restaurants/:id', async (req, res) => {
         const restaurantId = req.params.id;
     
         try {
@@ -85,21 +128,77 @@ const defineRoutes = () => {
         }
     });
 
-    app.delete('/restaurants/:id', async (req, res) => {
+    // Route to update restaurant data
+    app.put('/api/updateRestaurant/:id', async (req, res) => {
+        const restaurantIdToUpdate = req.params.id;
+    
+        try {
+            // Your validation logic here...
+    
+            // Extract updated data from the request body
+            const { building, street, zipcode, borough, name, cuisine } = req.body;
+    
+            // Construct the updated restaurant object
+            const updatedRestaurant = {
+                address: {
+                    building,
+                    street,
+                    zipcode,
+                    borough,
+                },
+                name,
+                cuisine,
+            };
+    
+            // Update the restaurant in the database
+            const updateResult = await RestaurantModel.findByIdAndUpdate(
+                { _id: new ObjectId(restaurantIdToUpdate) },
+                { $set: updatedRestaurant },
+                { new: true } // Return the updated document
+            );
+    
+            if (updateResult) {
+                // If successfully updated, send a JSON response
+                res.status(200).json({ message: 'Restaurant updated successfully', updatedRestaurant: updateResult });
+            } else {
+                // If the restaurant is not found, send an error response
+                res.status(404).json({ message: 'Restaurant not found or could not be updated' });
+            }
+        } catch (error) {
+            console.error('Error updating restaurant:', error.message);
+            res.status(500).json({ message: 'Internal Server Error', error: error.message });
+        }
+    });
+
+    // Route to delete restaurant
+    app.delete('/api/restaurants/:id', async (req, res) => {
         const restaurantIdToDelete = req.params.id;
     
         try {
-            const deleteResult = await restaurantModule.deleteRestaurantById(restaurantIdToDelete);
+            // Validate if the provided ID is a valid ObjectId
+            if (!ObjectId.isValid(restaurantIdToDelete)) {
+                return res.status(400).json({ message: 'Invalid restaurant ID format' });
+            }
+    
+            // Convert the string ID to ObjectId
+            const objectIdRestaurantId = new ObjectId(restaurantIdToDelete);
+    
+            // Delete the restaurant by ID from the MongoDB database
+            const deleteResult = await restaurantModule.deleteRestaurantById(objectIdRestaurantId);
     
             if (deleteResult.success) {
+                // If successfully deleted, send a JSON response
                 res.status(200).json({ message: 'Restaurant deleted successfully' });
             } else {
+                // If not found or could not be deleted, send an error JSON response
                 res.status(404).json({ message: 'Restaurant not found or could not be deleted' });
             }
         } catch (error) {
             console.error('Error deleting restaurant:', error.message);
-            res.status(500).json({ message: 'Internal Server Error' });
+            res.status(500).json({ message: 'Internal Server Error', error: error.message });
         }
     });
+    
+
     
 };
