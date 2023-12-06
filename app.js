@@ -18,7 +18,7 @@ const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT | 3000;
 
 // Use middleware to parse URL-encoded data
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -60,8 +60,8 @@ restaurantModule.initialize(config.url)
         defineRoutes();
 
         // Start the server
-        app.listen(port, () => {
-            console.log(`Server listening on port ${port}`);
+        app.listen(PORT, () => {
+            console.log(`Server listening on port ${PORT}`);
         });
     })
     .catch((error) => {
