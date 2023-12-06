@@ -16,7 +16,8 @@ const path = require('path');
 const Restaurant = require('./models/restaurants');
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
-
+require('dotenv').config();
+const connectionString = process.env.MONGODB_URI
 const app = express();
 const PORT = process.env.PORT | 3000;
 
@@ -54,7 +55,7 @@ app.use('/public', express.static('public'));
 // });
 
 // Initialize the module before starting the server
-restaurantModule.initialize(config.url)
+restaurantModule.initialize(connectionString)
     .then(() => {
         // Define your routes after a successful MongoDB connection
         defineRoutes();
