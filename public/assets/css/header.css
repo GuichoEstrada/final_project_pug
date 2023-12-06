@@ -2,9 +2,17 @@
 .navbar {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-evenly;
     background-color: #0e0d0d;
     box-shadow: -2px 5px 5px -2px rgba(0,0,0,1);
+}
+.logo {
+    width: 50px;
+    height: 50px;
+    margin: 0.5rem;
+}
+.logo-title-container {
+    display: flex;
 }
 .menu {
     display: flex;
@@ -23,10 +31,10 @@
 }
 .header-title {
     margin: 1rem;
-}
-.header-title:hover {
-    animation: shake 0.5s;
-    animation-iteration-count: 2s;
+    display: inline;
 }
 .grow { transition: all .2s ease-in-out; }
-.grow:hover { transform: scale(2); }
+.grow:hover { 
+    transform: scale(2); 
+    border-bottom: 3px solid rgb(216, 153, 6);
+}

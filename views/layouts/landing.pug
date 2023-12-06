@@ -12,15 +12,16 @@ html(lang="en")
   body.body
     include ../partials/header
     main
-        h1.title Welcome to {Title Pending}
-        div.form-container
-            fieldset.form
-                form.login-form(action="/login", method="post")
-                    label.form-label(for="email") Email:
-                    input.form-input(type="text", id="email", name="email", required)
-                    label.form-label(for="password") Password:
-                    input.form-input(type="password", id="password", name="password", required)
-                    button.login-button(type="submit") Login
-                p.register-link Don't have an account? 
-                    a(href="/registration") Register
+      h1.title Welcome to {Title Pending}
+      div.form-container
+        img.chef(src="../../public/assets/images/chef.png" alt="chef")
+        fieldset.form
+            form.login-form(action="/login", method="post")
+                label.form-label(for="email") Email:
+                input.form-input(type="text", id="email", name="email", required)
+                label.form-label(for="password") Password:
+                input.form-input(type="password", id="password", name="password", required)
+                button.login-button(type="submit") Login
+            p.register-link Don't have an account? 
+                a(href="/registration") Register
     include ../partials/footer

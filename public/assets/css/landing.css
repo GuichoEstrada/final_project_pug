@@ -51,3 +51,18 @@ body {
     display: flex;
     flex-direction: column;
 }
+.form-container {
+    display: relative;
+}
+.chef {
+    display: block;
+    position: absolute;
+    top: 40%;
+    left: 30%;
+    z-index: 1;
+    width: 15%;
+    height: auto;
+}
+.register-link {
+    margin: 0 auto;
+}

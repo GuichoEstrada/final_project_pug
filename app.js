@@ -5,7 +5,10 @@
  * (including web sites) or distributed to other students.*
  * Name: Luis Carlo Estrada | Steven Marty Ces Student ID: N01541627 Date: 11/23/2023
  **********************************************************************************/
+
 const express = require('express');
+const http = require('http');
+// const Greenlock = require('greenlock');
 const restaurantModule = require('./modules/module');
 const config = require('./config/database');
 const bodyParser = require('body-parser');
@@ -25,19 +28,45 @@ app.set('view engine', 'pug');
 
 app.use('/public', express.static('public'));
 
+// Greenlock setup for HTTPS and SSL Certificates
+// const greenlock = Greenlock.create({
+//     packageRoot: __dirname,
+//     configDir: "./greenlock.d/",
+//     packageAgent: 'final_project/1.0.0',  // Replace with your app name and version
+//     maintainerEmail: 'lcrestrada.dev@gmail.com',  // Replace with your email
+//     staging: true,  // Change to false for production
+//     notify: function (event, details) {
+//       if ('error' === event) {
+//         console.error(details);
+//       }
+//     },
+//   });
+
+// const altnames = ['localhost'];
+
+// greenlock
+// .add({
+//     subject: altnames[0],
+//     altnames: altnames,
+// })
+// .then(function () {
+//     // saved config to db (or file system)
+// });
+
 // Initialize the module before starting the server
 restaurantModule.initialize(config.url)
     .then(() => {
-        // Define your routes after successful MongoDB connection
+        // Define your routes after a successful MongoDB connection
         defineRoutes();
+
         // Start the server
         app.listen(port, () => {
-            console.log(`Server is running on port ${port}`);
+            console.log(`Server listening on port ${port}`);
         });
     })
     .catch((error) => {
-        console.error('Failed to initialize restaurant module:', error.message);
-    });
+        console.error('Failed to initialize the restaurant module:', error.message);
+});
 
 // Function to define routes
 const defineRoutes = () => {
