@@ -18,9 +18,7 @@ This project is the culmination of our Web Programming and Framework 1 course. I
 ### Key Features
 - CRUD (Create, Read, Update, Delete) operations for restaurant data
 - Security Measures:
-  - API-Key
   - JWT (JSON Web Tokens)
-  - Session, Cookie
   - .env for environment variables
   - bcrypt for password hashing
   - HTTPS for secure communication
