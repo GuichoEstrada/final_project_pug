@@ -31,7 +31,9 @@ const RestaurantSchema = new Schema({
     address: AddressSchema,
     grades: [GradeSchema],
     name: String,
-    restaurant_id: String
+    restaurant_id: String,
+    borough: String,
+    cuisine: String
 });
 
 const RestaurantModel = mongoose.model('Restaurant', RestaurantSchema);

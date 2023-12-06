@@ -67,12 +67,14 @@ const getRestaurantById = async (id) => {
 };
 
 const deleteRestaurantById = async (id) => {
+    console.log('Deleting restaurant with ID:', id);
     try {
         // Use Mongoose's deleteOne method to remove the restaurant by _id
         const result = await RestaurantModel.deleteOne({ _id: id });
 
         if (result.deletedCount === 1) {
             // Restaurant successfully deleted
+            console.log('Result:', result);
             return { success: true, message: 'Restaurant deleted successfully' };
         } else {
             // Restaurant not found
@@ -84,11 +86,22 @@ const deleteRestaurantById = async (id) => {
     }
 };
 
+const searchRestaurantsByAddress = async (borough) => {
+    try {
+        const results = await RestaurantModel.find({ 'borough': borough });
+        return results;
+    } catch (error) {
+        console.error('Error searching restaurants by borough:', error.message);
+        throw error;
+    }
+};
+
 module.exports = {
     initialize,
     addNewRestaurant,
     getAllRestaurants,
     getRestaurantById,
     addNewRestaurant,
-    deleteRestaurantById
+    deleteRestaurantById,
+    searchRestaurantsByAddress
 };

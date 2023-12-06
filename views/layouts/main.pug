@@ -1,5 +1,11 @@
 link(rel="stylesheet", href="../../public/assets/css/header.css")
 link(rel="stylesheet", href="../../public/assets/css/styles.css")
+link(rel="icon" type="image/x-icon" href="/public/assets/images/favicon.png")
+link(rel="preconnect" href="https://fonts.googleapis.com")
+link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+link(href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet")
+link(href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Pacifico&display=swap" rel="stylesheet")
+
 html(lang="en")
   head
     meta(charset="UTF-8")
@@ -27,18 +33,20 @@ html(lang="en")
                 p Borough: #{restaurant.borough}
                 p Cuisine: #{restaurant.cuisine}
               div.restaurant-actions
-                button.update-button(type="button", onclick=`openUpdateModal(${JSON.stringify(restaurant)})`) Update
-                button.delete-button(type="button", data-restaurant-id=restaurant.restaurant_id) Delete
+                button.update-button(type="button", onclick=`openUpdateModal(${JSON.stringify(restaurant)})`)
+                  i.fas.fa-sync
+                button.delete-button(type="button", data-restaurant-id=restaurant.restaurant_id)
+                  i.fas.fa-trash-alt
       include ../partials/footer
       script.
         async function deleteRestaurant(restaurantId) {
             console.log(restaurantId);
             try {
                 // Send a DELETE request to the server to delete the restaurant
-                const response = await fetch(`/api/restaurants/${encodeURIComponent(restaurantId)}`, {
+                const response = await fetch(`/api/restaurants/${restaurantId}`, {
                     method: 'DELETE',
                 });
-                console.log(`/api/restaurants/${encodeURIComponent(restaurantId)}`);
+                console.log(`/api/restaurants/${restaurantId}`);
 
                 if (response.ok) {
                     // If successfully deleted, remove the restaurant from the UI
@@ -66,6 +74,7 @@ html(lang="en")
                 });
             });
         });
+
 
         //- function openUpdateModal(restaurantId, building, street, zipcode, borough, name, cuisine) {
         //-     // Populate the modal fields with existing data

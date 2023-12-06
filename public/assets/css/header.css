@@ -4,11 +4,13 @@
     flex-direction: row;
     justify-content: space-between;
     background-color: #0e0d0d;
+    box-shadow: -2px 5px 5px -2px rgba(0,0,0,1);
 }
 .menu {
     display: flex;
     list-style: none;
     margin: 1rem;
+    align-items: center;
 }
 .menu-item{
     margin: 0 1rem;
@@ -19,6 +21,12 @@
     text-decoration: none;
     color: rgb(216, 153, 6);
 }
-.title {
+.header-title {
     margin: 1rem;
 }
+.header-title:hover {
+    animation: shake 0.5s;
+    animation-iteration-count: 2s;
+}
+.grow { transition: all .2s ease-in-out; }
+.grow:hover { transform: scale(2); }

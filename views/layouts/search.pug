@@ -1,0 +1,39 @@
+link(rel="stylesheet", href="../../public/assets/css/searchRestaurant.css")
+link(rel="preconnect" href="https://fonts.googleapis.com")
+link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+link(rel="icon" type="image/x-icon" href="/public/assets/images/favicon.png")
+link(href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet")
+link(href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Pacifico&display=swap" rel="stylesheet")
+html
+  head
+    title Search for a Restaurant
+  body
+    include ../partials/header
+    main 
+      h1.title Search by Borough
+      div.search-form-container
+        form(action="/api/search" method="POST" class="search-form")
+          input(type="text" name="keyword" placeholder="Search Borough" class="search-input")
+          button(type="submit" class="search-button") Search
+          div.results-container
+            if restaurants && restaurants.length
+              ul.restaurant-card-container
+                each restaurant in restaurants
+                  li.restaurant-card(id=`restaurant-${restaurant.restaurant_id}`)
+                    div.restaurant-details
+                      p Restaurant ID: #{restaurant.restaurant_id}
+                      p Name: #{restaurant.name}
+                      if restaurant.address
+                        p Address: 
+                          | #{restaurant.address.street} #{restaurant.address.building},
+                          | #{restaurant.address.zipcode}
+                      else
+                        p Address: N/A
+                      p Borough: #{restaurant.borough}
+                      p Cuisine: #{restaurant.cuisine}
+                      div.restaurant-actions
+                        button.update-button(type="button", onclick=`openUpdateModal(${JSON.stringify(restaurant)})`) Update
+                        button.delete-button(type="button", data-restaurant-id=restaurant.restaurant_id) Delete
+            else
+              p.none-notification No restaurants found!
+    include ../partials/footer

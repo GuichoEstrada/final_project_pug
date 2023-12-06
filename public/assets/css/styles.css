@@ -1,11 +1,18 @@
 body {
     margin: 0;
+    background: url(https://img.freepik.com/premium-vector/fast-food-seamless-pattern-delicious-food-colored-ornament-cartoon-vector-illustration-modern-design-decor-wallpaper-background-textile_534604-531.jpghttps://img.freepik.com/premium-vector/cute-fast-food-cartoon-seamless-pattern-background-wallpaper_40564-113.jpg);
 }
 .content {
     margin: 1rem;
 }
 .title {
     text-align: center;
+    font-family: 'Pacifico', cursive;
+    font-size: 3rem;
+    letter-spacing: 0.5rem;
+    color: rgb(66, 41, 16);
+    animation: shake 0.5s;
+    animation-iteration-count: 2s;
 }
 .restaurant-added-notification {
     background-color: #4caf50;
@@ -23,16 +30,23 @@ body {
     flex-direction: row;
     flex-wrap: wrap;
     padding: 0;
+    justify-content: center;
 }
 
 .restaurant-card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
     padding: 10px;
     margin-bottom: 10px;
-    width: 30%;
+    width: 25%;
     list-style: none;
     margin: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-family: 'Abril Fatface', serif;
+    letter-spacing: 0.1rem;
 }
   
 .restaurant-details {
@@ -61,11 +75,11 @@ body {
 
 .fadeOut {
     animation-name: fadeInOut;
-    animation-duration: 4s; /* 2s fade-in + 2s delay + 2s fade-out */
+    animation-duration: 4s; 
     animation-timing-function: ease-in-out;
-    animation-fill-mode: forwards; /* Keeps the final style after animation ends */
-    display: inline-block; /* Adjust as per your layout requirements */
-    visibility: visible; /* Initial visibility */
+    animation-fill-mode: forwards; 
+    display: inline-block; 
+    visibility: visible;
 }
   
 @keyframes fadeInOut {
@@ -80,7 +94,21 @@ body {
     }
     100% {
       opacity: 0;
-      visibility: hidden; /* Hides the element after animation ends */
-      display: none; /* Optionally set display to none */
+      visibility: hidden; 
+      display: none;
     }
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
 }

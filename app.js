@@ -44,7 +44,16 @@ const defineRoutes = () => {
     // Landing page
     app.get('/', async (req, res) => {
         try {
-            res.send('WELCOME')
+            res.render('landing.pug')
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+    // Registration page
+    app.get('/registration', async (req, res) => {
+        try {
+            res.render('registration.pug')
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');
@@ -199,6 +208,30 @@ const defineRoutes = () => {
         }
     });
     
-
+    // Additional Feature ( Search by Borough)
+    // Route for search bar
+    app.get('/api/search', async (req, res) => {
+        try {
+            res.render('search');
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+    //Route for search result
+    // Assuming you have a restaurantModule with a function searchRestaurantsByAddress
+    app.post('/api/search', async (req, res) => {
+        try {
+            const address = req.body.keyword;
+            const restaurants = await restaurantModule.searchRestaurantsByAddress(address);
+            // Render the 'main' template with the search results
+            res.render('search', {
+                restaurants
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
     
 };

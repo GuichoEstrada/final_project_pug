@@ -1,0 +1,26 @@
+link(rel="stylesheet", href="../../public/assets/css/landing.css")
+link(rel="icon", type="image/x-icon", href="/public/assets/images/favicon.png")
+link(rel="preconnect", href="https://fonts.googleapis.com")
+link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
+link(href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap", rel="stylesheet")
+link(href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Pacifico&display=swap", rel="stylesheet")
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Login Page
+  body.body
+    include ../partials/header
+    main
+        h1.title Welcome to {Title Pending}
+        div.form-container
+            fieldset.form
+                form.login-form(action="/login", method="post")
+                    label.form-label(for="email") Email:
+                    input.form-input(type="text", id="email", name="email", required)
+                    label.form-label(for="password") Password:
+                    input.form-input(type="password", id="password", name="password", required)
+                    button.login-button(type="submit") Login
+                p.register-link Don't have an account? 
+                    a(href="/registration") Register
+    include ../partials/footer

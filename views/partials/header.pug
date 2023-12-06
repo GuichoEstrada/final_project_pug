@@ -1,9 +1,13 @@
 link(rel="stylesheet", href="../../public/assets/css/header.css")
+link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-...YOUR-INTEGRITY-CODE-HERE..." crossorigin="anonymous")
 header
   nav.navbar 
     a.hyperlink(href="/api/restaurants")
-      h1.title Restaurant Finder* 
+      h1.header-title Restaurant Finder* 
     ul.menu 
-      li.menu-item Filter
-      li.menu-item 
-        a.hyperlink(href="/api/addNewRestaurant") Add 
+      li.menu-item.grow
+        a.hyperlink(href="/api/search")
+          i.fas.fa-search
+      li.menu-item.grow 
+        a.hyperlink(href="/api/addNewRestaurant")
+          i.fas.fa-plus
