@@ -6,7 +6,5 @@
  * Name: Luis Carlo Estrada Student ID: N01541627 Date: 11/23/2023
  **********************************************************************************/
 module.exports = {
-    url: "mongodb+srv://lcrestrada:1Seb2Svs3Kmi@cluster0.mnc8coe.mongodb.net/sample_restaurants?retryWrites=true&w=majority",
-    //url: "mongodb+srv://stevenmarty:RTj3pVgXm72utPit@clustersteven.g0cjhcv.mongodb.net/sample_restaurants"
-    //pang sample ko lng sakin kasi di ko pa maaccess mongo cluster mo hehehe pagpapalitin ko na lang ung comment part pag ikaw a mageedit
+    url: "mongodb+srv://lcrestrada:1Seb2Svs3Kmi@cluster0.mnc8coe.mongodb.net/sample_restaurants?retryWrites=true&w=majority"
 };

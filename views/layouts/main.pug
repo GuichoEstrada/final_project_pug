@@ -47,16 +47,6 @@ html(lang="en")
                     method: 'DELETE',
                 });
                 console.log(`/api/restaurants/${restaurantId}`);
-
-                if (response.ok) {
-                    // If successfully deleted, remove the restaurant from the UI
-                    const deletedRestaurant = document.getElementById(`restaurant-${restaurantId}`);
-                    deletedRestaurant.remove();
-                } else {
-                    // Handle the case where the server returns an error
-                    console.error('Error deleting restaurant:', response.status, response.statusText);
-                    alert('Error deleting restaurant. Please try again.');
-                }
             } catch (error) {
                 console.error('Error deleting restaurant:', error.message);
                 alert('Error deleting restaurant. Please try again.');

@@ -155,7 +155,7 @@ const defineRoutes = () => {
     
             if (restaurant) {
                 // Restaurant found
-                res.render('main', { restaurants: [restaurant] });  // Render the main layout
+                res.render('main', { restaurants: [restaurant] }); 
             } else {
                 // Restaurant not found
                 res.status(404).send('Restaurant not found');
@@ -210,19 +210,11 @@ const defineRoutes = () => {
 
     // Route to delete restaurant
     app.delete('/api/restaurants/:id', async (req, res) => {
-        const restaurantIdToDelete = req.params.id;
+        const RestaurantId = req.params.id;
     
         try {
-            // Validate if the provided ID is a valid ObjectId
-            if (!ObjectId.isValid(restaurantIdToDelete)) {
-                return res.status(400).json({ message: 'Invalid restaurant ID format' });
-            }
-    
-            // Convert the string ID to ObjectId
-            const objectIdRestaurantId = new ObjectId(restaurantIdToDelete);
-    
             // Delete the restaurant by ID from the MongoDB database
-            const deleteResult = await restaurantModule.deleteRestaurantById(objectIdRestaurantId);
+            const deleteResult = await restaurantModule.deleteRestaurantById(RestaurantId);
     
             if (deleteResult.success) {
                 // If successfully deleted, send a JSON response
