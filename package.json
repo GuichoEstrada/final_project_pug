@@ -4,11 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-<<<<<<< HEAD
     "start": "set PORT=3000 && node app.js",
-=======
-    "start": "node app.js",
->>>>>>> 966c95ce9b95a3a4ecb9ac440eed96988a629dde
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
