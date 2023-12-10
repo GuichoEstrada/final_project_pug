@@ -44,7 +44,7 @@ const getAllRestaurants = async (page, perPage, borough) => {
             .skip(skip)
             .limit(perPage);
 
-        return restaurants;
+        return { restaurants, totalPages };
     } catch (error) {
         console.error('Error retrieving restaurants:', error.message);
         throw error;

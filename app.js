@@ -106,20 +106,27 @@ const defineRoutes = () => {
     // Route to get all restaurants
     app.get('/api/restaurants', async (req, res) => {
         try {
-            const page = req.query.page || 1;
-            const perPage = req.query.perPage || 10;
+            const page = parseInt(req.query.page) || 1;
+            const perPage = req.query.perPage || 12; // Display 12 restaurants per page
             const borough = req.query.borough || null;
             const showNotification = req.query.notification === 'added';
-            const restaurants = await restaurantModule.getAllRestaurants(page, perPage, borough);
+            const { restaurants, totalPages } = await restaurantModule.getAllRestaurants(page, perPage, borough);
+    
+            // Create an array of page numbers for pagination
+            const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+    
             res.render('main', { 
                 restaurants,
-                showNotification 
-            })
+                showNotification,
+                pages,
+                currentPage: page
+            });
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');
         }
     });
+    module.exports = app;
 
     app.get('/api/restaurants/:id', async (req, res) => {
         const restaurantId = req.params.id;

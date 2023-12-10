@@ -33,10 +33,22 @@ html(lang="en")
                 p Borough: #{restaurant.borough}
                 p Cuisine: #{restaurant.cuisine}
               div.restaurant-actions
-                button.update-button(type="button", onclick=`openUpdateModal(${JSON.stringify(restaurant)})`)
+                button.update-button(type="button" onclick=`openUpdateModal(${JSON.stringify(restaurant)})`)
                   i.fas.fa-sync
-                button.delete-button(type="button", data-restaurant-id=restaurant.restaurant_id)
+                button.delete-button(type="button" data-restaurant-id=restaurant.restaurant_id)
                   i.fas.fa-trash-alt
+        // Pagination code
+        if pages && pages.length > 1
+          nav.pagination-nav
+            ul.pagination-list
+              li.pagination-item
+                a.pagination-link(href=`/api/restaurants?page=${currentPage - 1}` class=(currentPage === 1 ? 'disabled' : '')) Prev
+              each page in pages
+                li.pagination-item(class=(page === currentPage ? 'active' : ''))
+                  a.pagination-link(href=`/api/restaurants?page=${page}`)= page
+              li.pagination-item
+                a.pagination-link(href=`/api/restaurants?page=${currentPage + 1}` class=(currentPage === totalPages ? 'disabled' : '')) Next
+            // Pagination code
       include ../partials/footer
       script.
         async function deleteRestaurant(restaurantId) {
