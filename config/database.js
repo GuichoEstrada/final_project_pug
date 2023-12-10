@@ -7,4 +7,5 @@
  **********************************************************************************/
 module.exports = {
     url: "mongodb+srv://lcrestrada:1Seb2Svs3Kmi@cluster0.mnc8coe.mongodb.net/sample_restaurants?retryWrites=true&w=majority"
+    //url: "mongodb+srv://stevenmarty:RTj3pVgXm72utPit@clustersteven.g0cjhcv.mongodb.net/sample_restaurants"
 };
