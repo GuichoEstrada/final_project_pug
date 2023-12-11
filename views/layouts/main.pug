@@ -33,7 +33,7 @@ html(lang="en")
                 p Borough: #{restaurant.borough}
                 p Cuisine: #{restaurant.cuisine}
               div.restaurant-actions
-                button.update-button(type="button" onclick=`openUpdateModal(${JSON.stringify(restaurant)})`)
+                button.update-button(type="button")
                   i.fas.fa-sync
                 button.delete-button(type="button" data-restaurant-id=restaurant.restaurant_id)
                   i.fas.fa-trash-alt
@@ -80,52 +80,3 @@ html(lang="en")
                 });
             });
         });
-
-        //- function openUpdateModal(restaurantId, building, street, zipcode, borough, name, cuisine) {
-        //-     // Populate the modal fields with existing data
-        //-     document.getElementById('updateRestaurantId').value = restaurantId;
-        //-     document.getElementById('updateBuilding').value = building;
-        //-     document.getElementById('updateStreet').value = street;
-        //-     document.getElementById('updateZipcode').value = zipcode;
-        //-     document.getElementById('updateBorough').value = borough;
-        //-     document.getElementById('updateName').value = name;
-        //-     document.getElementById('updateCuisine').value = cuisine;
-
-        //-     // Show the modal
-        //-     $('#updateModal').modal('show');
-        //- }
-        
-        //- // Add this script to handle the update request
-        //- async function updateRestaurant() {
-        //-     const restaurantId = document.getElementById('updateRestaurantId').value;
-        //-     const updatedData = {
-        //-         building: document.getElementById('updateBuilding').value,
-        //-         street: document.getElementById('updateStreet').value,
-        //-         zipcode: document.getElementById('updateZipcode').value,
-        //-         borough: document.getElementById('updateBorough').value,
-        //-         name: document.getElementById('updateName').value,
-        //-         cuisine: document.getElementById('updateCuisine').value,
-        //-     };
-
-        //-     try {
-        //-         const response = await fetch(`/api/updateRestaurant/${encodeURIComponent(restaurantId)}`, {
-        //-             method: 'PUT',
-        //-             headers: {
-        //-                 'Content-Type': 'application/json',
-        //-             },
-        //-             body: JSON.stringify(updatedData),
-        //-         });
-
-        //-         if (response.ok) {
-        //-             // If successfully updated, hide the modal or perform other actions
-        //-             $('#updateModal').modal('hide');
-        //-         } else {
-        //-             // Handle errors
-        //-             console.error('Error updating restaurant:', response.status, response.statusText);
-        //-             alert('Error updating restaurant. Please try again.');
-        //-         }
-        //-     } catch (error) {
-        //-         console.error('Error updating restaurant:', error.message);
-        //-         alert('Error updating restaurant. Please try again.');
-        //-     }
-        //- }

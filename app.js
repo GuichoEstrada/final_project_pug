@@ -197,9 +197,8 @@ const defineRoutes = () => {
         try {
             const page = parseInt(req.query.page) || 1;
             const perPage = req.query.perPage || 10;
-            const borough = req.query.borough || null;
             const showNotification = req.query.notification === 'added';
-            const { restaurants, totalPages } = await restaurantModule.getAllRestaurants(page, perPage, borough);
+            const { restaurants, totalPages } = await restaurantModule.getAllRestaurants(page, perPage);
     
             const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
     
@@ -311,11 +310,17 @@ const defineRoutes = () => {
     // Assuming you have a restaurantModule with a function searchRestaurantsByAddress
     app.post('/api/search', async (req, res) => {
         try {
+            const page = parseInt(req.query.page) || 1;
+            const perPage = req.query.perPage || 10;
             const address = req.body.keyword;
-            const restaurants = await restaurantModule.searchRestaurantsByAddress(address);
-            // Render the 'main' template with the search results
+            const { results, totalPages } = await restaurantModule.searchRestaurantsByAddress(address, page, perPage);
+
+            const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+            
             res.render('search', {
-                restaurants
+                restaurants:results,
+                pages,
+                currentPage: page
             });
         } catch (error) {
             console.error(error);

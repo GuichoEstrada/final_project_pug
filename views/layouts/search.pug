@@ -31,9 +31,27 @@ html
                         p Address: N/A
                       p Borough: #{restaurant.borough}
                       p Cuisine: #{restaurant.cuisine}
-                      div.restaurant-actions
-                        button.update-button(type="button", onclick=`openUpdateModal(${JSON.stringify(restaurant)})`) Update
-                        button.delete-button(type="button", data-restaurant-id=restaurant.restaurant_id) Delete
+                    div.restaurant-actions
+                      button.update-button(type="button")
+                        i.fas.fa-sync
+                      button.delete-button(type="button" data-restaurant-id=restaurant.restaurant_id)
+                        i.fas.fa-trash-alt
+                // Pagination code
+                if pages && pages.length > 1
+                  nav.pagination-nav
+                    ul.pagination-list
+                      li.pagination-item
+                        a.pagination-link(href=`/api/search?page=${currentPage - 1}` class=(currentPage === 1 ? 'disabled' : '')) Prev
+                      each page in pages.slice(0, 10)
+                        li.pagination-item(class=(page === currentPage ? 'active' : ''))
+                          a.pagination-link(href=`/api/search?page=${page}`)= page
+                      if pages.length > 10
+                        // Add a ">>" button for the next set of 10 pages
+                        li.pagination-item
+                          a.pagination-link(href=`/api/search?page=${pages[9] + 1}`) &raquo;
+                      li.pagination-item
+                        a.pagination-link(href=`/api/search?page=${currentPage + 1}` class=(currentPage === totalPages ? 'disabled' : '')) Next
+                // Pagination code
             else
               p.none-notification No restaurants found!
     include ../partials/footer

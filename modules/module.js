@@ -86,10 +86,25 @@ const deleteRestaurantById = async (restaurant_id) => {
     }
 };
 
-const searchRestaurantsByAddress = async (borough) => {
+const searchRestaurantsByAddress = async (borough, page, perPage) => {
     try {
-        const results = await RestaurantModel.find({ 'borough': borough });
-        return results;
+        const query = borough ? { borough } : {};
+        const resultsCount = await RestaurantModel.find({ 'borough': borough });
+        const totalPages = Math.ceil(resultsCount / perPage);
+
+        if (page < 1 || page > totalPages) {
+            throw new Error('Invalid page number');
+        }
+
+        const skip = (page - 1) * perPage;
+
+        const results = await RestaurantModel
+            .find(query)
+            .sort({ restaurant_id: 1 })
+            .skip(skip)
+            .limit(perPage);
+
+        return { results, totalPages };
     } catch (error) {
         console.error('Error searching restaurants by borough:', error.message);
         throw error;
