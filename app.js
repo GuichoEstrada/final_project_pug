@@ -183,7 +183,7 @@ const defineRoutes = () => {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     });
-    app.get('/api/addNewRestaurant', authenticate, async (req, res) => {
+    app.get('/api/addNewRestaurant', async (req, res) => {
         try {
             res.render('addRestaurant')
         } catch (error) {
