@@ -36,7 +36,7 @@ app.use('/public', express.static('public'));
 app.use(express.json());
 
 // Initialize the module before starting the server
-restaurantModule.initialize(config.url)
+restaurantModule.initialize(connectionString)
     .then(() => {
         // Define your routes after a successful MongoDB connection
         defineRoutes();
@@ -49,8 +49,8 @@ restaurantModule.initialize(config.url)
         const certificate = fs.readFileSync(certificatePath, 'utf8');
         const credentials = { key: privateKey, cert: certificate, passphrase:'password' };
         const server = https.createServer(credentials, app);
-        server.listen(3000, () => {
-            console.log('Server is running on port 3000');
+        server.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
         });
     })
     .catch((error) => {
