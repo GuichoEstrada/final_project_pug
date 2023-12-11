@@ -5,27 +5,35 @@
  * (including web sites) or distributed to other students.*
  * Name: Luis Carlo Estrada | Steven Marty Ces Student ID: N01541627 Date: 11/23/2023
  **********************************************************************************/
-
+require('dotenv').config();
 const express = require('express');
-const restaurantModule = require('./modules/module');
+const https = require('https');
+const fs = require('fs');
 const config = require('./config/database');
+const connectionString = process.env.MONGODB_URI
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 const path = require('path');
+
+const restaurantModule = require('./modules/module');
 const Restaurant = require('./models/restaurants');
+const UserModel = require('./models/users');
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
-const connectionString = process.env.MONGODB_URI
+
 const app = express();
 const PORT = process.env.PORT | 3000;
-require('dotenv').config();
 
 // Use middleware to parse URL-encoded data
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.set('views', path.join(__dirname, 'views', 'layouts'));
 app.set('view engine', 'pug');
 
 app.use('/public', express.static('public'));
+app.use(express.json());
 
 // Initialize the module before starting the server
 restaurantModule.initialize(config.url)
@@ -33,26 +41,88 @@ restaurantModule.initialize(config.url)
         // Define your routes after a successful MongoDB connection
         defineRoutes();
 
-        // Start the server
-        app.listen(PORT, () => {
-            console.log(`Server listening on port ${PORT}`);
+        const privateKeyPath = 'C:/Users/Carlo/key.pem';
+        const certificatePath = 'C:/Users/Carlo/cert.pem';
+
+        // Configure HTTPS
+        const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+        const certificate = fs.readFileSync(certificatePath, 'utf8');
+        const credentials = { key: privateKey, cert: certificate, passphrase:'password' };
+        const server = https.createServer(credentials, app);
+        server.listen(3000, () => {
+            console.log('Server is running on port 3000');
         });
     })
     .catch((error) => {
         console.error('Failed to initialize the restaurant module:', error.message);
 });
 
+// Create a middleware function for authentication
+const authenticate = async (req, res, next) => {
+    try {
+        console.log('Authenticate Middleware Executed');
+        const token = req.header('Authorization')?.replace('Bearer ', '');
+        console.log('Token:', token);
+
+        if (!token) {
+            throw new Error('Token missing');
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await UserModel.findOne({ _id: decoded.userId });
+
+        console.log('Decoded Token:', decoded);
+        console.log('User:', user);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        req.user = user;
+        next();
+    } catch (error) {
+        console.error('Authentication Error:', error);
+        res.status(401).json({ error: `Authentication failed: ${error.message}` });
+    }
+};
+
 // Function to define routes
 const defineRoutes = () => {
-    // Landing page
+    // Default route
     app.get('/', async (req, res) => {
         try {
-            res.render('landing.pug')
+            res.render('landing', { query: req.query, user: req.user });
         } catch (error) {
             console.error(error);
             res.status(500).send('Internal Server Error');
         }
     });
+    // Logging In
+    app.get('/login', async (req, res) => {
+        try {
+            res.render('landing', { query: req.query, user: req.user });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+
+    app.post('/login', async (req, res) => {
+        try {
+            const { email, password } = req.body;
+            // Check user credentials and get the user
+            const user = await UserModel.findByCredentials(email, password);
+            console.log('Logged in user:', user);
+            // Generate a JWT token using the generateToken method
+            const token = user.generateToken();
+            console.log('Generated Token:', token);
+            // Send the token in the response header
+            res.json({ token: token });
+        } catch (error) {
+            console.error(error);
+            res.status(401).json({ error: 'Invalid credentials' });
+        }
+    });
+
     // Registration page
     app.get('/registration', async (req, res) => {
         try {
@@ -62,6 +132,25 @@ const defineRoutes = () => {
             res.status(500).send('Internal Server Error');
         }
     });
+    app.post('/register', async (req, res) => {
+        try {
+          const userData = {
+            email: req.body.email,
+            password: req.body.password,
+          };
+      
+          // Create a new user using the model
+          const newUser = new UserModel(userData);
+      
+          // Save the new user to the database
+          await newUser.save();
+
+          res.redirect('/login?registrationSuccess=true');
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });      
     // Route to add a new restaurant
     app.post('/api/addNewRestaurant', async (req, res) => {
         try {
@@ -94,7 +183,7 @@ const defineRoutes = () => {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     });
-    app.get('/api/addNewRestaurant', async (req, res) => {
+    app.get('/api/addNewRestaurant', authenticate, async (req, res) => {
         try {
             res.render('addRestaurant')
         } catch (error) {
@@ -107,15 +196,14 @@ const defineRoutes = () => {
     app.get('/api/restaurants', async (req, res) => {
         try {
             const page = parseInt(req.query.page) || 1;
-            const perPage = req.query.perPage || 12; // Display 12 restaurants per page
+            const perPage = req.query.perPage || 10;
             const borough = req.query.borough || null;
             const showNotification = req.query.notification === 'added';
             const { restaurants, totalPages } = await restaurantModule.getAllRestaurants(page, perPage, borough);
     
-            // Create an array of page numbers for pagination
             const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
     
-            res.render('main', { 
+            res.render('main', {
                 restaurants,
                 showNotification,
                 pages,
@@ -125,8 +213,7 @@ const defineRoutes = () => {
             console.error(error);
             res.status(500).send('Internal Server Error');
         }
-    });
-    module.exports = app;
+    })
 
     app.get('/api/restaurants/:id', async (req, res) => {
         const restaurantId = req.params.id;

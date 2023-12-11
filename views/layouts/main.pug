@@ -43,12 +43,16 @@ html(lang="en")
             ul.pagination-list
               li.pagination-item
                 a.pagination-link(href=`/api/restaurants?page=${currentPage - 1}` class=(currentPage === 1 ? 'disabled' : '')) Prev
-              each page in pages
+              each page in pages.slice(0, 10)
                 li.pagination-item(class=(page === currentPage ? 'active' : ''))
                   a.pagination-link(href=`/api/restaurants?page=${page}`)= page
+              if pages.length > 10
+                // Add a ">>" button for the next set of 10 pages
+                li.pagination-item
+                  a.pagination-link(href=`/api/restaurants?page=${pages[9] + 1}`) &raquo;
               li.pagination-item
                 a.pagination-link(href=`/api/restaurants?page=${currentPage + 1}` class=(currentPage === totalPages ? 'disabled' : '')) Next
-            // Pagination code
+        // Pagination code
       include ../partials/footer
       script.
         async function deleteRestaurant(restaurantId) {
@@ -76,7 +80,6 @@ html(lang="en")
                 });
             });
         });
-
 
         //- function openUpdateModal(restaurantId, building, street, zipcode, borough, name, cuisine) {
         //-     // Populate the modal fields with existing data
