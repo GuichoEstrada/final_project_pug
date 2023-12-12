@@ -38,9 +38,10 @@ app.use(express.json());
 // Initialize the module before starting the server
 restaurantModule.initialize(connectionString)
     .then(() => {
-        // Define your routes after a successful MongoDB connection
+        // Define routes after a successful MongoDB connection
         defineRoutes();
 
+        // Paths for pem files for ssl
         const privateKeyPath = 'C:/Users/Carlo/key.pem';
         const certificatePath = 'C:/Users/Carlo/cert.pem';
 

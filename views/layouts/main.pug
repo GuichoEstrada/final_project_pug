@@ -20,7 +20,7 @@ html(lang="en")
         h1.title All Restaurants
         ul.restaurant-card-container
           each restaurant in restaurants
-            li.restaurant-card(id=`restaurant-${restaurant.restaurant_id}`)
+            li.restaurant-card.card-grow(id=`restaurant-${restaurant.restaurant_id}`)
               div.restaurant-details
                 p Restaurant ID: #{restaurant.restaurant_id}
                 p Name: #{restaurant.name}
@@ -77,6 +77,7 @@ html(lang="en")
                 button.addEventListener('click', function() {
                     const restaurantId = button.dataset.restaurantId;
                     deleteRestaurant(restaurantId);
+                    window.location.href = '/api/restaurants';
                 });
             });
         });

@@ -19,7 +19,7 @@ html
             if restaurants && restaurants.length
               ul.restaurant-card-container
                 each restaurant in restaurants
-                  li.restaurant-card(id=`restaurant-${restaurant.restaurant_id}`)
+                  li.restaurant-card.card-grow(id=`restaurant-${restaurant.restaurant_id}`)
                     div.restaurant-details
                       p Restaurant ID: #{restaurant.restaurant_id}
                       p Name: #{restaurant.name}

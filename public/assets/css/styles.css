@@ -94,8 +94,22 @@ body {
     padding: 8px 12px;
     border: 1px solid #ccc;
     color: #333;
-    background-color: #fff;
+    background-color: #000;
     cursor: pointer;
+    border-radius: 10px;
+    border: 0;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: 700;
+}
+.pagination-link {
+    text-decoration: none;
+    color: rgb(216, 153, 6);
+}
+
+.card-grow { transition: all .2s ease-in-out; }
+.card-grow:hover { 
+    transform: scale(1.1); 
+    border-bottom: 3px solid rgb(34, 34, 34, 0.2);
 }
   
 @keyframes fadeInOut {
