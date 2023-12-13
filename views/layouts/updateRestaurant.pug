@@ -1,4 +1,3 @@
-doctype html
 html(lang="en")
   head
     meta(charset="UTF-8")
@@ -10,31 +9,27 @@ html(lang="en")
     link(href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet")
     link(href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Pacifico&display=swap" rel="stylesheet")
     link(rel="stylesheet", href="../../public/assets/css/addNewRestaurant.css")
+    link(rel="stylesheet", href="../../public/assets/css/updateRestaurant.css")
   body
     include ../partials/header
     main
       .container
         h1.title Edit Restaurant Details
-        form#updateRestaurantForm(action=`/api/restaurants/${restaurant._id}`, method="post")
-          .form-group
-            label(for="name") Name
-            input(type="text", name="name", value=restaurant.name, required)
-          .form-group
-            label(for="building") Building
-            input(type="text", name="building", value=restaurant.address.building)
-          .form-group
-            label(for="street") Street
-            input(type="text", name="street", value=restaurant.address.street, required)
-          .form-group
-            label(for="zipcode") Zip Code
-            input(type="text", name="zipcode", value=restaurant.address.zipcode)
-          .form-group
-            label(for="borough") Borough
-            input(type="text", name="borough", value=restaurant.borough)
-          .form-group
-            label(for="cuisine") Cuisine
-            input(type="text", name="cuisine", value=restaurant.cuisine, required)
-          button(type="submit") Update Restaurant
+        fieldset.update-form
+          form#updateRestaurantForm(action=`/api/restaurants/${restaurant._id}`, method="post")
+              label.form-label(for="name") Name
+              input.form-input(type="text", name="name", value=restaurant.name, required)
+              label.form-label(for="building") Building
+              input.form-input(type="text", name="building", value=restaurant.address.building)
+              label.form-label(for="street") Street
+              input.form-input(type="text", name="street", value=restaurant.address.street, required)
+              label.form-label(for="zipcode") Zip Code
+              input.form-input(type="text", name="zipcode", value=restaurant.address.zipcode)
+              label.form-label(for="borough") Borough
+              input.form-input(type="text", name="borough", value=restaurant.borough)
+              label.form-label(for="cuisine") Cuisine
+              input.form-input(type="text", name="cuisine", value=restaurant.cuisine, required)
+              button.form-button(type="submit") Update Restaurant
     include ../partials/footer
     script.
       document.addEventListener('DOMContentLoaded', function() {

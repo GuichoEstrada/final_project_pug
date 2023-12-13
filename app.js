@@ -44,10 +44,10 @@ restaurantModule.initialize(connectionString)
         defineRoutes();
 
         // Paths for pem files for ssl
-        //const privateKeyPath = 'C:/Users/Carlo/key.pem';
-        //const certificatePath = 'C:/Users/Carlo/cert.pem';
-        const privateKeyPath = 'C:/Users/cesst/key.pem';
-        const certificatePath = 'C:/Users/cesst/cert.pem';
+        const privateKeyPath = 'C:/Users/Carlo/key.pem';
+        const certificatePath = 'C:/Users/Carlo/cert.pem';
+        // const privateKeyPath = 'C:/Users/cesst/key.pem';
+        // const certificatePath = 'C:/Users/cesst/cert.pem';
 
         // Configure HTTPS
         const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
