@@ -28,18 +28,8 @@ userSchema.pre('save', async function (next) {
     next();
 });
 
-// Generate a JWT token for the user
-userSchema.methods.generateToken = function () {
-    const user = this;
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    console.log(token)
-    return token;
-};
-
 // Find a user by email and password
 userSchema.statics.findByCredentials = async function (email, password) {
-    console.log('Login attempt with email:', email);
-
     const user = await this.findOne({ email: email.trim() });
 
     if (!user) {
@@ -55,6 +45,14 @@ userSchema.statics.findByCredentials = async function (email, password) {
     }
 
     return user;
+};
+
+// Generate a JWT token for the user
+userSchema.methods.generateToken = function () {
+    const user = this;
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { algorithm: 'HS256' }, { expiresIn: '1h' });
+    console.log('Encoded Token:', token);
+    return token;
 };
 
 const UserModel = mongoose.model('User', userSchema);
