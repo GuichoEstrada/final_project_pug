@@ -30,43 +30,65 @@ html(lang="en")
           p.invalid-notification Invalid credentials. Please try again.
     include ../partials/footer
     script.
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelector('form').addEventListener('submit', async function(event) {
-                event.preventDefault();
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelector('form').addEventListener('submit', async function(event) {
+            event.preventDefault();
 
-                const emailElement = document.getElementById('email');
-                const passwordElement = document.getElementById('password');
+            const emailElement = document.getElementById('email');
+            const passwordElement = document.getElementById('password');
 
-                if (emailElement && passwordElement) {
-                    const email = emailElement.value;
-                    const password = passwordElement.value;
+            if (emailElement && passwordElement) {
+                const email = emailElement.value;
+                const password = passwordElement.value;
 
-                    console.log('Email:', email);
+                console.log('Email:', email);
 
-                    try {
-                        const response = await fetch('/login', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ email, password }),
-                        });
-                        const authenticationSuccess = response.headers.get('Authentication-Success') === 'true';
-                        console.log(authenticationSuccess)
-                        if (authenticationSuccess) {
-                            // The login was successful; handle the redirect on the client side
-                            window.location.href = '/api/restaurants';
-                        } else {
-                            // Handle error responses as needed
-                            const data = await response.json();
-                            console.error('Login Error:', data.error);
-                        }
-                    } catch (error) {
-                        // Handle fetch errors
-                        console.error('Fetch error:', error);
+                try {
+                    const response = await fetch('/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email, password }),
+                    });
+                    
+                    if (response.ok) {
+                      const data = await response.json();
+                      const token = data.token; // Assuming your server sends the token in the response
+
+                      try {
+                          const authenticatedResponse = await fetch('/api/restaurants', {
+                              headers: {
+                                  'Authorization': `Bearer ${token}`,
+                              },
+                          });
+
+                          if (authenticatedResponse.ok) {
+                              // Handle the successful response
+                              const responseData = await authenticatedResponse.json();
+                              console.log('Response Data:', responseData);
+                          } else {
+                              // Handle error responses
+                              const errorData = await authenticatedResponse.json();
+                              console.error('Fetch Error:', errorData);
+                          }
+                      } catch (error) {
+                          console.error('Fetch Error:', error);
+                      }
+
+                      // The login was successful; handle the redirect on the client side
+                      window.location.href = '/api/restaurants';
+                    } else {
+                        // Handle error responses as needed
+                        const data = await response.json();
+                        console.error('Login Error:', data.error);
                     }
-                } else {
-                    console.error('Email or password element not found');
+                } catch (error) {
+                    // Handle fetch errors
+                    console.error('Fetch error:', error);
                 }
-            });
+            } else {
+                console.error('Email or password element not found');
+            }
         });
+      });

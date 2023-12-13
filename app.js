@@ -79,6 +79,9 @@ const authenticate = async (req, res, next) => {
             throw new Error('User not found');
         }
         req.user = user;
+        res.header('Authentication-Success', 'true');
+
+        next();
     } catch (error) {
         console.error('Authentication Error:', error);
         res.status(401).json({ error: `Authentication failed: ${error.message}` });
@@ -117,7 +120,6 @@ const defineRoutes = () => {
             console.log('Generated Token:', token);
             // Send the token in the response header
             res.json({ token: token });
-            console.log(res.json({ token: token }))
         } catch (error) {
             console.error(error);
             res.status(401).json({ error: 'Invalid credentials' });
@@ -194,7 +196,7 @@ const defineRoutes = () => {
     });
 
     // Route to get all restaurants
-    app.get('/api/restaurants', authenticate, async (req, res) => {
+    app.get('/api/restaurants', async (req, res) => {
         try {
             const page = parseInt(req.query.page) || 1;
             const perPage = req.query.perPage || 10;
