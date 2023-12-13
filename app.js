@@ -20,6 +20,8 @@ const restaurantModule = require('./modules/module');
 const Restaurant = require('./models/restaurants');
 const UserModel = require('./models/users');
 const mongoose = require('mongoose');
+const RestaurantModel = require('./models/restaurants');
+
 const { ObjectId } = mongoose.Types;
 
 const app = express();
@@ -42,8 +44,10 @@ restaurantModule.initialize(connectionString)
         defineRoutes();
 
         // Paths for pem files for ssl
-        const privateKeyPath = 'C:/Users/Carlo/key.pem';
-        const certificatePath = 'C:/Users/Carlo/cert.pem';
+        //const privateKeyPath = 'C:/Users/Carlo/key.pem';
+        //const certificatePath = 'C:/Users/Carlo/cert.pem';
+        const privateKeyPath = 'C:/Users/cesst/key.pem';
+        const certificatePath = 'C:/Users/cesst/cert.pem';
 
         // Configure HTTPS
         const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
@@ -332,3 +336,47 @@ const defineRoutes = () => {
     });
     
 };
+
+app.get('/restaurant/edit/:id', async (req, res) => {
+    const restaurantId = req.params.id;
+    try {
+        // Use findOne to search by restaurant_id instead of _id
+        const restaurantData = await RestaurantModel.findOne({ restaurant_id: restaurantId });
+        if (restaurantData) {
+            // Render the updateRestaurant.pug template with the restaurant data
+            res.render('updateRestaurant', { restaurant: restaurantData });
+        } else {
+            // If not found, send a 404 status with a message
+            res.status(404).send('Restaurant not found');
+        }
+    } catch (error) {
+        // Log the error and send a 500 status with the error message
+        console.error('Error fetching restaurant data:', error);
+        // Include the error message in the response
+        res.status(500).send(`Internal Server Error: ${error.message}`);
+    }
+});
+
+app.post('/api/restaurants/:id', async (req, res) => {
+    const restaurantId = req.params.id;
+    const updatedData = req.body; // Assuming you're using body-parser middleware
+    try {
+      const updateResult = await RestaurantModel.findByIdAndUpdate(
+        restaurantId,
+        { $set: updatedData },
+        { new: true }
+      );
+      if (updateResult) {
+        res.json({ success: true, message: 'Restaurant updated successfully' });
+      } else {
+        res.status(404).json({ success: false, message: 'Restaurant not found' });
+      }
+    } catch (error) {
+      console.error('Error updating restaurant:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+    }
+  });
+  
+
+  
+

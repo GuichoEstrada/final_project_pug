@@ -33,7 +33,7 @@ html(lang="en")
                 p Borough: #{restaurant.borough}
                 p Cuisine: #{restaurant.cuisine}
               div.restaurant-actions
-                button.update-button(type="button")
+                button.update-button(type="button" data-restaurant-id=restaurant.restaurant_id)
                   i.fas.fa-sync
                 button.delete-button(type="button" data-restaurant-id=restaurant.restaurant_id)
                   i.fas.fa-trash-alt
@@ -79,5 +79,16 @@ html(lang="en")
                     deleteRestaurant(restaurantId);
                     window.location.href = '/api/restaurants';
                 });
+            });
+        });
+
+        
+                        // Attach click event handlers to the update buttons
+        const updateButtons = document.querySelectorAll('.update-button');
+        updateButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const restaurantId = this.closest('.restaurant-card').id.split('-')[1];
+                // Navigate to the update page with the restaurant's ID
+                window.location.href = `/restaurant/edit/${restaurantId}`;
             });
         });
