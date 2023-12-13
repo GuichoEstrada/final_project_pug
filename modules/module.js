@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types; // Import ObjectId
 const RestaurantModel = require('../models/restaurants');
 
 const initialize = async (connectionString) => {
@@ -111,6 +112,37 @@ const searchRestaurantsByAddress = async (borough, page, perPage) => {
     }
 };
 
+const updateRestaurant = async (restaurantId, updatedData) => {
+    try {
+        // Construct the updated restaurant object
+        const updatedRestaurant = {
+            address: {
+                building: updatedData.building,
+                street: updatedData.street,
+                zipcode: updatedData.zipcode,
+                borough: updatedData.borough,
+            },
+            name: updatedData.name,
+            cuisine: updatedData.cuisine,
+        };
+
+        // Update the restaurant in the database
+        const updateResult = await RestaurantModel.findByIdAndUpdate(
+            ObjectId(restaurantId), // Use ObjectId to convert string ID to MongoDB ObjectId
+            { $set: updatedRestaurant },
+            { new: true }
+        );
+
+        if (updateResult) {
+            return { success: true, message: 'Restaurant updated successfully', updatedRestaurant: updateResult };
+        } else {
+            throw new Error('Restaurant not found or could not be updated');
+        }
+    } catch (error) {
+        console.error('Error updating restaurant:', error.message);
+        throw error;
+    }
+};
 module.exports = {
     initialize,
     addNewRestaurant,
@@ -118,5 +150,6 @@ module.exports = {
     getRestaurantById,
     addNewRestaurant,
     deleteRestaurantById,
-    searchRestaurantsByAddress
+    searchRestaurantsByAddress,
+    updateRestaurant
 };

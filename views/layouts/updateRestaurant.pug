@@ -1,0 +1,72 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Update Restaurant
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(rel="icon" type="image/x-icon" href="/public/assets/images/favicon.png")
+    link(href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet")
+    link(href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Pacifico&display=swap" rel="stylesheet")
+    link(rel="stylesheet", href="../../public/assets/css/addNewRestaurant.css")
+  body
+    include ../partials/header
+    main
+      .container
+        h1.title Edit Restaurant Details
+        form#updateRestaurantForm(action=`/api/restaurants/${restaurant._id}`, method="post")
+          .form-group
+            label(for="name") Name
+            input(type="text", name="name", value=restaurant.name, required)
+          .form-group
+            label(for="building") Building
+            input(type="text", name="building", value=restaurant.address.building)
+          .form-group
+            label(for="street") Street
+            input(type="text", name="street", value=restaurant.address.street, required)
+          .form-group
+            label(for="zipcode") Zip Code
+            input(type="text", name="zipcode", value=restaurant.address.zipcode)
+          .form-group
+            label(for="borough") Borough
+            input(type="text", name="borough", value=restaurant.borough)
+          .form-group
+            label(for="cuisine") Cuisine
+            input(type="text", name="cuisine", value=restaurant.cuisine, required)
+          button(type="submit") Update Restaurant
+    include ../partials/footer
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        const updateForm = document.getElementById('updateRestaurantForm');
+        updateForm.addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent the default form submission
+          const formData = new FormData(updateForm);
+          const plainFormData = Object.fromEntries(formData.entries());
+          const formDataJsonString = JSON.stringify(plainFormData);
+
+          fetch(updateForm.action, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: formDataJsonString
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              // Handle success
+              alert('Restaurant updated successfully!');
+              window.location.href = `/api/restaurants`; // Redirect to the updated restaurant's page
+            } else {
+              // Handle failure
+              alert('Failed to update restaurant: ' + data.message);
+            }
+          })
+          .catch(error => {
+            // Handle network errors
+            console.error('Error updating restaurant:', error);
+          });
+        });
+      });
